@@ -38,22 +38,23 @@ def sen2cor(reference, product):
     p = subprocess.call(args,shell=True)
     
     level_2a = identifier.replace('L1C', 'L2A')
-    level_2a = identifier.replace('OPER', 'USER')
+    level_2a = level_2a.replace('OPER', 'USER')
     level_2a_path = os.path.join(ciop.tmp_dir, level_2a+'.SAFE')
     
     os.chdir(level_2a_path)
-    metadata = glob.glob("*.xml")[0]
+    metadata = glob.glob("S2A*.xml")[0]
 
     src = gdal.Open(metadata,gdal.GA_ReadOnly)
     subset = src.GetSubDatasets()[0][0]
     
-    driver = gdal.GetDriverByName("GTiff")
-    output = os.path.join(ciop.tmp_dir, level_2a+'_'+resolution+'.TIF')
-    dst = driver.CreateCopy(output,subset, 0)
-
-    #Properly close the datasets to flush to disk
     src = None
-    dst = None
+    
+    ciop.log('INFO', '[sen2cor function] Process '+ subset)
+    output = os.path.join(ciop.tmp_dir, level_2a+'_'+resolution+'.TIF')
+    
+    # TODO: Perform this step using the GDAL Python classes
+    args = ["gdal_translate "+subset+" "+output]
+    p = subprocess.call(args,shell=True)
     
     return output
 
