@@ -3,6 +3,7 @@
 import cioppy
 import subprocess
 import os
+from shutil import copyfile
 
 ciop = cioppy.Cioppy()
 
@@ -21,17 +22,17 @@ def sen2cor(reference, product):
     os.environ['GDAL_DATA'] = '/opt/anaconda/share/gdal'
     os.environ['PATH'] = '/opt/anaconda/bin/' + os.pathsep + os.environ['PATH']
     os.environ['SEN2COR_HOME'] = os.environ['TMPDIR'] + '/sen2cor'
-    cfgDirHome = os.environ['SEN2COR_HOME'] + '/cfg'
-    if not os.path.exists(cfgDirHome):
-        os.makedirs(cfgDirHome)
+    cfg = os.environ['SEN2COR_HOME'] + '/cfg'
+    if not os.path.exists(cfg):
+        os.makedirs(cfg)
         
-    copyfile(os.environ['SEN2COR_BIN'] + '/cfg/L2A_GIPP.xml', cfgDirHome + '/L2A_GIPP.xml')
-    copyfile(os.environ['SEN2COR_BIN'] + '/cfg/L2A_CAL_AC_GIPP.xml', cfgDirHome + '/L2A_CAL_AC_GIPP.xml')
-    copyfile(os.environ['SEN2COR_BIN'] + '/cfg/L2A_CAL_SC_GIPP.xml', cfgDirHome + '/L2A_CAL_SC_GIPP.xml')
+    copyfile(os.environ['SEN2COR_BIN'] + '/cfg/L2A_GIPP.xml', cfg + '/L2A_GIPP.xml')
+    copyfile(os.environ['SEN2COR_BIN'] + '/cfg/L2A_CAL_AC_GIPP.xml', cfg + '/L2A_CAL_AC_GIPP.xml')
+    copyfile(os.environ['SEN2COR_BIN'] + '/cfg/L2A_CAL_SC_GIPP.xml', cfg + '/L2A_CAL_SC_GIPP.xml')
     
     ciop.log('INFO', '[sen2cor function] Invoke SEN2COR L2A_Process')
     
-    args = ["L2A_Process"+" --resolution "+resolution+" "+granule_path]
+    args = ["L2A_Process"+" --resolution "+resolution+" "+product]
     p = subprocess.call(args,shell=True)
     
     level_2a = identifier.replace('L1C', 'L2A')

@@ -13,13 +13,15 @@ ciop = cioppy.Cioppy()
 # line-by-line.
 for reference in sys.stdin:
   
+    reference = reference.strip('\n')
+
     ciop.log('INFO', '**** Sentinel-2 Atmospheric Correction ****')
     ciop.log('INFO', '------------------------------------------------------------')
     ciop.log('INFO', 'Input S-2 L1C product reference: ' + reference)
     ciop.log('INFO', '------------------------------------------------------------')
     
     ciop.log('INFO', 'STEP 1: Getting input product')
-    local_product = get_data(reference.strip('\n'), os.environ['TMPDIR'])
+    local_product = get_data(reference, os.environ['TMPDIR'])
     ciop.log('INFO', '------------------------------------------------------------')
     
     ciop.log('INFO', 'STEP 2: SEN2COR tool')
