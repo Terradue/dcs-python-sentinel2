@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="us-ascii"?>
 <application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" id="application">
   <jobTemplates>
-    <jobTemplate id="template_A">
-      <streamingExecutable>/application/node_A/run.py</streamingExecutable>
-    </jobTemplate>
-    <jobTemplate id="template_B">
-      <streamingExecutable>/application/node_B/run.py</streamingExecutable>
+    <jobTemplate id="sen2cor">
+      <streamingExecutable>/application/sen2cor/run.py</streamingExecutable>
+      <defaultParameters>
+        <parameter id="resolution" scope="runtime" maxOccurs="1" title="Resolution for Sentinel-2 Level-2A product in meters (10, 20 or 60)" abstract="Resolution for Sentinel-2 Level-2A product in meters (10, 20 or 60). The bands are resampled to the selected target resolution">
+          <options>
+            <option>10</option>
+            <option>20</option>
+            <option>60</option>
+            <default>60</default>
+          </options>
+        </parameter>
+      </defaultParameters>
       <defaultJobconf>
-        <!-- By setting this property with value 1, the node will act as 'aggregator.
-             That is only one instance of the node will run on the cluster -->
-        <property id="ciop.job.max.tasks">1</property>
+        <property id="mapred.task.timeout">3600000</property>
       </defaultJobconf>
     </jobTemplate>
   </jobTemplates>
-    <workflow id="workflow" title="Simple workflow" abstract="Simple workflow based on the DCS Python archetype">
+    <workflow id="sen2cor" title="Sentinel-2 Atmospheric Correction" abstract="Application example written in Python to process Sentinel-2 Atmospheric correction">
     <workflowVersion>1.0</workflowVersion>
-    <node id="node_A">
-      <job id="template_A"/>
+    <node id="sen2cor_node">
+      <job id="sen2cor"/>
       <sources>
-        <source id="source" title="Simple string sources" abstract="List of comma-separated strings" refid="string:list" scope="runtime">input-1,input-2,input-3</source>
-      </sources>
-    </node>
-    <node id="node_B">
-      <job id="template_B"/>
-      <sources>
-        <source refid="wf:node">node_A</source>
+        <source id="source" title="Sentinel-2 L1C" abstract="List of Sentinel-2 L1C product references" refid="string:list" scope="runtime">https://catalog.terradue.com/sentinel2/search?uid=S2A_OPER_PRD_MSIL1C_PDMC_20161003T090023_R117_V20161003T015622_20161003T015616</source>
       </sources>
     </node>
   </workflow>
