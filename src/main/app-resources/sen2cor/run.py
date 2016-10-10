@@ -20,12 +20,12 @@ for reference in sys.stdin:
     
     ciop.log('INFO', 'STEP 1: Getting input product')
     local_product = get_data(reference.strip('\n'), os.environ['TMPDIR'])
-    ciop-log "INFO" "------------------------------------------------------------"
+    ciop.log('INFO', '------------------------------------------------------------')
     
     ciop.log('INFO', 'STEP 2: SEN2COR tool')
     output = sen2cor(reference, local_product)
-    ciop-log "INFO" "------------------------------------------------------------"
+    ciop.log('INFO', '------------------------------------------------------------')
     
     ciop.log('INFO', 'STEP 3: Publishing results')
     publish_data(output)
-    ciop-log "INFO" "------------------------------------------------------------"
+    ciop.log('INFO', '------------------------------------------------------------')
