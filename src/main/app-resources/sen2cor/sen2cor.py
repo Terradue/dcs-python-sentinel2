@@ -3,7 +3,9 @@
 import cioppy
 import subprocess
 import os
+import glob
 from shutil import copyfile
+from osgeo import gdal
 
 ciop = cioppy.Cioppy()
 
@@ -37,7 +39,21 @@ def sen2cor(reference, product):
     
     level_2a = identifier.replace('L1C', 'L2A')
     level_2a = identifier.replace('OPER', 'USER')
-    level_2a_path = os.path.join(os.environ['TMPDIR'], level_2a+'.SAFE')
+    level_2a_path = os.path.join(ciop.tmp_dir, level_2a+'.SAFE')
     
-    ciop.log('INFO', '[sen2cor function] level_2a_path:' + level_2a_path)
+    os.chdir(level_2a_path)
+    metadata = glob.glob("*.xml")[0]
+
+    src = gdal.Open(metadata,gdal.GA_ReadOnly)
+    subset = src.GetSubDatasets()[0][0]
+    
+    driver = gdal.GetDriverByName("GTiff")
+    output = os.path.join(ciop.tmp_dir, level_2a+'_'+resolution+'.TIF')
+    dst = driver.CreateCopy(output,subset, 0)
+
+    #Properly close the datasets to flush to disk
+    src = None
+    dst = None
+    
+    return output
 
