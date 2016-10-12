@@ -47,7 +47,7 @@ To install these packages, run the simple steps below on the Developer Cloud San
 
 ```bash
 sudo yum install -y miniconda openjpeg2
-sudo conda install -y gdal sen2cor ciopppy
+sudo conda install -y gdal sen2cor cioppy
 ```
 
 ### Using the development version
